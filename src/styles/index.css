@@ -1,0 +1,281 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+ * The Knights' Whisper — Custom Theme (Tailwind v4)
+ * All dungeon colors, fonts, and design tokens
+ * --------------------------------------------------------------------------- */
+
+@theme {
+  /* --- Base colors --- */
+  --color-dungeon-bg: #0a0810;
+  --color-dungeon-surface: #0d0b10;
+  --color-dungeon-elevated: #0f0c14;
+  --color-dungeon-border: #1a1520;
+  --color-dungeon-borderfaint: #181420;
+  --color-dungeon-deep: #0c0a10;
+
+  /* --- Text colors --- */
+  --color-dungeon-text: #c0b4d4;
+  --color-dungeon-textdim: #8a7a9e;
+  --color-dungeon-textfaint: #6a5a8a;
+  --color-dungeon-ghost: #5a4a6a;
+  --color-dungeon-ash: #3a2e4a;
+
+  /* --- Accent colors --- */
+  --color-dungeon-gold: #d4a84a;
+  --color-dungeon-blue: #7a9ac0;
+  --color-dungeon-blueborder: #2a3e5a;
+
+  /* --- Hostile NPC --- */
+  --color-dungeon-hostile: #6a1818;
+  --color-dungeon-hostilebg: #200c0c;
+  --color-dungeon-hostiletext: #d04040;
+  --color-dungeon-hostilepill: #2e0e0e;
+
+  /* --- Neutral NPC --- */
+  --color-dungeon-neutral: #2e2844;
+  --color-dungeon-neutralbg: #14101e;
+  --color-dungeon-neutraltext: #6a5a9a;
+  --color-dungeon-neutralpill: #1a162a;
+
+  /* --- Friendly NPC --- */
+  --color-dungeon-friendly: #1a5a2a;
+  --color-dungeon-friendlybg: #0c1c12;
+  --color-dungeon-friendlytext: #308a50;
+  --color-dungeon-friendlypill: #0c1e10;
+
+  /* --- Wary NPC --- */
+  --color-dungeon-wary: #5a3e10;
+  --color-dungeon-warybg: #1c1408;
+  --color-dungeon-warytext: #a07020;
+  --color-dungeon-warypill: #201608;
+
+  /* --- Stats --- */
+  --color-dungeon-hp: #a03030;
+  --color-dungeon-gold2: #8a6010;
+  --color-dungeon-statbg: #1e1828;
+
+  /* --- Inventory --- */
+  --color-dungeon-invtag: #1a1624;
+  --color-dungeon-invtagborder: #2e2844;
+  --color-dungeon-invtagtext: #6a5a8a;
+
+  /* --- Input & Send --- */
+  --color-dungeon-inputbg: #16121e;
+  --color-dungeon-inputborder: #221c34;
+  --color-dungeon-inputfocus: #3e3060;
+  --color-dungeon-inputtext: #c8bcd8;
+  --color-dungeon-placeholder: #3a2e4a;
+  --color-dungeon-sendbg: #1e1830;
+  --color-dungeon-sendborder: #3a2e50;
+  --color-dungeon-sendtext: #9a88c0;
+
+  /* --- Fonts --- */
+  --font-serif: 'IM Fell English', Georgia, serif;
+  --font-mono: 'Courier Prime', 'Courier New', monospace;
+}
+
+/* ---------------------------------------------------------------------------
+ * Global Styles
+ * --------------------------------------------------------------------------- */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #06040a;
+  overflow: auto;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+ * CSS Animations
+ * --------------------------------------------------------------------------- */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes flicker {
+  0% { transform: translateX(-50%) scaleX(1) scaleY(1); opacity: 0.85; }
+  33% { transform: translateX(-48%) scaleX(0.9) scaleY(1.05); opacity: 0.9; }
+  66% { transform: translateX(-52%) scaleX(1.1) scaleY(0.95); opacity: 0.8; }
+  100% { transform: translateX(-50%) scaleX(0.95) scaleY(1.02); opacity: 0.88; }
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes flicker-fast {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  33% { transform: scale(1.08); opacity: 0.85; }
+  66% { transform: scale(0.95); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------------------
+ * Stat Change Animations
+ * --------------------------------------------------------------------------- */
+
+@keyframes damage-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-4px); }
+  20% { transform: translateX(4px); }
+  30% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+@keyframes hp-pulse {
+  0% { box-shadow: 0 0 8px rgba(200,40,40,0.3); }
+  50% { box-shadow: 0 0 24px rgba(255,60,60,0.7), 0 0 48px rgba(200,40,40,0.3); }
+  100% { box-shadow: 0 0 8px rgba(200,40,40,0.3); }
+}
+
+@keyframes hp-heal-pulse {
+  0% { box-shadow: 0 0 8px rgba(40,160,60,0.3); }
+  50% { box-shadow: 0 0 24px rgba(60,220,80,0.7), 0 0 48px rgba(40,160,60,0.3); }
+  100% { box-shadow: 0 0 8px rgba(40,160,60,0.3); }
+}
+
+@keyframes gold-shimmer {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(1.8); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes stat-number-flash {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+@keyframes npc-disposition-flash {
+  0% { background: rgba(255,255,255,0); }
+  20% { background: rgba(255,255,255,0.06); }
+  100% { background: rgba(255,255,255,0); }
+}
+
+@keyframes npc-ring-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes toast-slide-in {
+  0% { transform: translateX(120%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toast-slide-out {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes inventory-slide-in {
+  0% { transform: translateY(8px) scale(0.8); opacity: 0; }
+  60% { transform: translateY(-2px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes delta-float {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-18px); opacity: 0; }
+}
+
+/* Apply animations */
+.animate-blink {
+  animation: blink 1s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 2.5s ease-in-out infinite;
+}
+
+.animate-flicker-fast {
+  animation: flicker-fast 1.2s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-damage-shake {
+  animation: damage-shake 0.5s ease-out;
+}
+
+.animate-hp-pulse {
+  animation: hp-pulse 0.8s ease-out;
+}
+
+.animate-hp-heal-pulse {
+  animation: hp-heal-pulse 0.8s ease-out;
+}
+
+.animate-gold-shimmer {
+  animation: gold-shimmer 0.6s ease-out;
+}
+
+.animate-stat-flash {
+  animation: stat-number-flash 0.4s ease-out;
+}
+
+.animate-npc-flash {
+  animation: npc-disposition-flash 0.8s ease-out;
+}
+
+.animate-npc-ring-pulse {
+  animation: npc-ring-pulse 0.5s ease-out;
+}
+
+.animate-toast-in {
+  animation: toast-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-toast-out {
+  animation: toast-slide-out 0.3s ease-in forwards;
+}
+
+.animate-inventory-in {
+  animation: inventory-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-delta-float {
+  animation: delta-float 1.2s ease-out forwards;
+}
+
+/* ---------------------------------------------------------------------------
+ * Scrollbar Hiding
+ * --------------------------------------------------------------------------- */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Focus Overrides
+ * --------------------------------------------------------------------------- */
+
+*:focus {
+  outline: none;
+}
+
+input:focus {
+  outline: 2px solid #d4a84a;
+  outline-offset: 2px;
+}
