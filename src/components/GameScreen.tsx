@@ -32,7 +32,6 @@ export function GameScreen() {
       action,
       worldState,
       turns,
-      // onToken — immutable update: clone the turn object
       (token: string) => {
         setTurns(prev => {
           return prev.map(turn => {
@@ -43,11 +42,9 @@ export function GameScreen() {
           });
         });
       },
-      // onStateUpdate — merge world state patch via useWorldState hook
       (patch: Partial<typeof worldState>) => {
         applyPatch(patch);
         
-        // Mark turn streaming as complete
         setTurns(prev => {
           return prev.map(turn => {
             if (turn.id === turnId) {
@@ -74,28 +71,22 @@ export function GameScreen() {
   
   return (
     <div className="h-screen flex flex-col bg-[#06040a] relative overflow-hidden">
-      {/* ── Top: Scene Banner ── */}
       <SceneArea dungeonOnAlert={worldState.flags.dungeonOnAlert} gamePhase={worldState.flags.gamePhase} />
       
-      {/* ── Stat Change Toasts ── */}
       <StatChangeToast changes={changes} onDismiss={dismissChange} />
       
-      {/* ── Main Content ── */}
       <div className="flex-1 flex flex-col lg:flex-row gap-0 lg:gap-0 min-h-0">
-        {/* Left Sidebar: NPCs + Stats */}
         <aside className="w-full lg:w-[300px] xl:w-[340px] flex-shrink-0 bg-dungeon-surface border-r border-dungeon-borderfaint flex flex-col overflow-y-auto scrollbar-hide">
           <NPCStrip npcs={worldState.npcs} />
           <StatsRow player={worldState.player} />
         </aside>
         
-        {/* Right: Story Log + Input */}
         <main className="flex-1 flex flex-col min-h-0 bg-dungeon-surface">
           <StoryLog turns={turns} />
           <InputBar onSubmit={handlePlayerAction} disabled={isStreaming || isGameEnded} />
         </main>
       </div>
       
-      {/* ── Ending Overlay ── */}
       {(isVictory || isDefeat) && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
           <div className="max-w-xl px-8 flex flex-col items-center gap-6">

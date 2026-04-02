@@ -1,13 +1,8 @@
 /**
  * RunAnywhere SDK initialization and model catalog.
  *
- * This module:
- * 1. Initializes the core SDK (TypeScript-only, no WASM)
- * 2. Registers the LlamaCPP backend (loads LLM/VLM WASM)
- * 3. Registers the ONNX backend (sherpa-onnx — STT/TTS/VAD)
- * 4. Registers the model catalog and wires up VLM worker
- *
- * Import this module once at app startup.
+ * Matches the official Quick Start exactly:
+ * https://docs.runanywhere.ai/web/quick-start
  */
 
 import {
@@ -22,16 +17,15 @@ import {
 import { LlamaCPP, VLMWorkerBridge } from '@runanywhere/web-llamacpp';
 import { ONNX } from '@runanywhere/web-onnx';
 
-// Vite bundles the worker as a standalone JS chunk and returns its URL.
 // @ts-ignore — Vite-specific ?worker&url query
 import vlmWorkerUrl from './workers/vlm-worker?worker&url';
 
 // ---------------------------------------------------------------------------
-// Model catalog
+// Model catalog — only the 350M model for LLM (matches Quick Start)
 // ---------------------------------------------------------------------------
 
 const MODELS: CompactModelDef[] = [
-  // LLM — Liquid AI LFM2 350M (small + fast for chat)
+  // LLM — Liquid AI LFM2 350M (the Quick Start model, small + fast)
   {
     id: 'lfm2-350m-q4_k_m',
     name: 'LFM2 350M Q4_K_M',
@@ -40,16 +34,6 @@ const MODELS: CompactModelDef[] = [
     framework: LLMFramework.LlamaCpp,
     modality: ModelCategory.Language,
     memoryRequirement: 250_000_000,
-  },
-  // LLM — Liquid AI LFM2 1.2B Tool (optimized for tool calling & function calling)
-  {
-    id: 'lfm2-1.2b-tool-q4_k_m',
-    name: 'LFM2 1.2B Tool Q4_K_M',
-    repo: 'LiquidAI/LFM2-1.2B-Tool-GGUF',
-    files: ['LFM2-1.2B-Tool-Q4_K_M.gguf'],
-    framework: LLMFramework.LlamaCpp,
-    modality: ModelCategory.Language,
-    memoryRequirement: 800_000_000,
   },
   // VLM — Liquid AI LFM2-VL 450M (vision + language)
   {
@@ -104,20 +88,27 @@ export async function initSDK(): Promise<void> {
   if (_initPromise) return _initPromise;
 
   _initPromise = (async () => {
-    // Step 1: Initialize core SDK (TypeScript-only, no WASM)
+    console.log('[SDK] Step 1: Initializing RunAnywhere core...');
     await RunAnywhere.initialize({
       environment: SDKEnvironment.Development,
+      apiKey: import.meta.env.VITE_RUNANYWHERE_API_KEY,
       debug: true,
     });
+    console.log('[SDK] ✓ Core initialized');
 
-    // Step 2: Register backends (loads WASM automatically)
+    console.log('[SDK] Step 2: Registering LlamaCPP backend...');
     await LlamaCPP.register();
+    console.log('[SDK] ✓ LlamaCPP registered. Acceleration:', LlamaCPP.accelerationMode);
+
+    console.log('[SDK] Step 3: Registering ONNX backend...');
     await ONNX.register();
+    console.log('[SDK] ✓ ONNX registered');
 
-    // Step 3: Register model catalog
+    console.log('[SDK] Step 4: Registering model catalog...');
     RunAnywhere.registerModels(MODELS);
+    console.log('[SDK] ✓ Models registered:', MODELS.map(m => m.id));
 
-    // Step 4: Wire up VLM worker
+    // Wire up VLM worker
     VLMWorkerBridge.shared.workerUrl = vlmWorkerUrl;
     RunAnywhere.setVLMLoader({
       get isInitialized() { return VLMWorkerBridge.shared.isInitialized; },
@@ -125,6 +116,8 @@ export async function initSDK(): Promise<void> {
       loadModel: (params) => VLMWorkerBridge.shared.loadModel(params),
       unloadModel: () => VLMWorkerBridge.shared.unloadModel(),
     });
+    console.log('[SDK] ✓ VLM worker wired up');
+    console.log('[SDK] === SDK initialization complete ===');
   })();
 
   return _initPromise;
