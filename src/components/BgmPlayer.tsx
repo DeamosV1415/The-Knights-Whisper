@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import bgmSrc from "../assets/Dungeon Master BGM.mp3";
+import bgmSrc from "../assets/Dungeon Master BGM.MP3";
 
 export function BgmPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
