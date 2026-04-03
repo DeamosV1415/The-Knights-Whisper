@@ -222,7 +222,3 @@ src/
 Built with ⚔️ for **HackXtreme**
 
 ---
-
-## 📄 License
-
-MIT
